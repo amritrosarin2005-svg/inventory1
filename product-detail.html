@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Product Detail - Inventory App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0 12px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('bg3.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      position: relative;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      z-index: 0;
+    }
+
+    /* Back buttons container */
+    .back-buttons {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      justify-content: flex-start;
+      gap: 12px;
+      margin: 16px 0 0 0;
+      z-index: 1;
+    }
+
+    .back-buttons button {
+      background: rgba(40, 40, 40, 0.8);
+      border: 1px solid #444;
+      color: #ddd;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+      font-size: 14px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .back-buttons button:hover {
+      background-color: #2563eb;
+      border-color: #2563eb;
+      color: white;
+    }
+
+    .card {
+      backdrop-filter: blur(14px);
+      background: rgba(30, 30, 30, 0.9);
+      padding: 24px 20px;
+      border-radius: 18px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+      color: #ddd;
+      margin-top: 12px;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 16px;
+      color: #60a5fa;
+      position: relative;
+    }
+
+    h2::after {
+      content: '';
+      display: block;
+      height: 3px;
+      width: 40px;
+      background: #60a5fa;
+      margin: 8px auto 0;
+      border-radius: 2px;
+    }
+
+    img {
+      display: block;
+      margin: 0 auto 20px auto;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #ccc;
+      display: block;
+    }
+
+    input, select {
+      background: #1f1f1f;
+      color: #eee;
+      border: 1px solid #444;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+
+    input:focus, select:focus {
+      background: #2a2a2a;
+      border-color: #60a5fa;
+      outline: none;
+    }
+
+    input:disabled {
+      background: #333;
+      cursor: not-allowed;
+      color: #999;
+    }
+
+    /* Serial input spans full width */
+    #serial {
+      grid-column: 1 / -1;
+    }
+
+    /* Date input spans full width */
+    #date {
+      grid-column: 1 / -1;
+    }
+
+    /* Category input spans full width */
+    #category {
+      grid-column: 1 / -1;
+    }
+
+    .buttons {
+      margin-top: 24px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button.save {
+      flex: 1 1 40%;
+      min-width: 120px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      background-color: #2563eb;
+      color: white;
+    }
+
+    button.save:hover {
+      background-color: #1d4ed8;
+      transform: scale(1.05);
+    }
+
+    button.delete {
+      flex: 1 1 40%;
+      min-width: 120px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      background-color: #dc2626;
+      color: white;
+    }
+
+    button.delete:hover {
+      background-color: #b91c1c;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 480px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+      .buttons {
+        flex-direction: column;
+      }
+      button.save, button.delete {
+        width: 100%;
+        flex: none;
+      }
+      .back-buttons {
+        justify-content: center;
+        gap: 16px;
+        margin-bottom: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="back-buttons">
+    <button type="button" id="btnHome">← Home</button>
+    <button type="button" id="btnItems">← Items</button>
+  </div>
+
+  <div class="card">
+    <h2 id="title">Loading...</h2>
+    <img id="itemImage" src="" alt="Item Image" />
+    <form id="detailForm" autocomplete="off">
+      <label for="name">Name</label>
+      <input type="text" id="name" required />
+
+      <label for="price">Price (₹)</label>
+      <input type="number" id="price" min="0" required />
+
+      <label for="stock">Stock</label>
+      <input type="number" id="stock" min="0" required />
+
+      <label for="serial">Serial Number</label>
+      <input type="text" id="serial" disabled />
+
+      <label for="category">Category</label>
+      <select id="category" required>
+        <option value="Gel">Gel</option>
+        <option value="Face Wash">Face Wash</option>
+        <option value="Cleaner">Cleaner</option>
+      </select>
+
+      <label for="date">Date</label>
+      <input type="date" id="date" required />
+    </form>
+
+    <div class="buttons">
+      <button class="save" id="saveBtn">Save</button>
+      <button class="delete" id="deleteBtn">Delete</button>
+    </div>
+  </div>
+
+  <script>
+    // Navigation button handlers
+    document.getElementById('btnHome').addEventListener('click', () => {
+      window.location.href = 'home.html';
+    });
+    document.getElementById('btnItems').addEventListener('click', () => {
+      window.location.href = 'items.html';
+    });
+
+    /* Your existing JavaScript code unchanged */
+    const defaultItems = [
+      {
+        name: "Green Shine Face Wash",
+        price: 100,
+        stock: 20,
+        serial: "CA1001",
+        category: "Face Wash",
+        image: "item1.jpg",
+        date: "2024-01-10",
+      },
+      {
+        name: "Organic Green Body Shower Gel",
+        price: 200,
+        stock: 15,
+        serial: "CB1002",
+        category: "Gel",
+        image: "item2.jpg",
+        date: "2024-02-18",
+      },
+      {
+        name: "Multipurpose Cleaner Gelwash",
+        price: 180,
+        stock: 25,
+        serial: "CC1003",
+        category: "Cleaner",
+        image: "item3.jpg",
+        date: "2024-03-22",
+      },
+      {
+        name: "Gelwash",
+        price: 220,
+        stock: 5,
+        serial: "CD1004",
+        category: "Gel",
+        image: "item4.jpg",
+        date: "2024-04-11",
+      },
+    ];
+
+    function getDeletedDefaultSerials() {
+      return JSON.parse(localStorage.getItem("deletedDefaultItems")) || [];
+    }
+    function setDeletedDefaultSerials(arr) {
+      localStorage.setItem("deletedDefaultItems", JSON.stringify(arr));
+    }
+    function markDefaultItemDeleted(serial) {
+      const deletedSerials = getDeletedDefaultSerials();
+      if (!deletedSerials.includes(serial)) {
+        deletedSerials.push(serial);
+        setDeletedDefaultSerials(deletedSerials);
+      }
+    }
+    function getStoredItems() {
+      return JSON.parse(localStorage.getItem("inventoryItems")) || [];
+    }
+    function setStoredItems(arr) {
+      localStorage.setItem("inventoryItems", JSON.stringify(arr));
+    }
+    function getSerialFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("serial");
+    }
+    const title = document.getElementById("title");
+    const itemImage = document.getElementById("itemImage");
+    const form = document.getElementById("detailForm");
+    const nameInput = document.getElementById("name");
+    const priceInput = document.getElementById("price");
+    const stockInput = document.getElementById("stock");
+    const serialInput = document.getElementById("serial");
+    const categoryInput = document.getElementById("category");
+    const dateInput = document.getElementById("date");
+    const saveBtn = document.getElementById("saveBtn");
+    const deleteBtn = document.getElementById("deleteBtn");
+    let currentItem = null;
+    let isDefault = false;
+    function loadItem() {
+      const serial = getSerialFromURL();
+      if (!serial) {
+        alert("No serial number provided.");
+        window.location.href = "items.html";
+        return;
+      }
+      currentItem = null;
+      isDefault = false;
+      // Check in stored items first
+      const storedItems = getStoredItems();
+      currentItem = storedItems.find((item) => item.serial === serial);
+      if (!currentItem) {
+        // Check default items (only if not deleted)
+        const deletedSerials = getDeletedDefaultSerials();
+        if (!deletedSerials.includes(serial)) {
+          currentItem = defaultItems.find((item) => item.serial === serial);
+          isDefault = !!currentItem;
+        }
+      }
+      if (!currentItem) {
+        alert("Item not found.");
+        window.location.href = "items.html";
+        return;
+      }
+      title.textContent = currentItem.name;
+      itemImage.src = currentItem.image || "item1.jpg";
+      nameInput.value = currentItem.name;
+      priceInput.value = currentItem.price;
+      stockInput.value = currentItem.stock;
+      serialInput.value = currentItem.serial;
+      categoryInput.value = currentItem.category || "";
+      dateInput.value = currentItem.date || "";
+    }
+    function saveItem() {
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      const storedItems = getStoredItems();
+      if (isDefault) {
+        // If it's a default item, add a new stored item with the same serial, so it overrides default
+        const exists = storedItems.find((item) => item.serial === currentItem.serial);
+        if (exists) {
+          exists.name = nameInput.value.trim();
+          exists.price = Number(priceInput.value);
+          exists.stock = Number(stockInput.value);
+          exists.category = categoryInput.value;
+          exists.date = dateInput.value;
+          // Image update not supported here
+        } else {
+          storedItems.push({
+            name: nameInput.value.trim(),
+            price: Number(priceInput.value),
+            stock: Number(stockInput.value),
+            serial: currentItem.serial,
+            category: categoryInput.value,
+            image: currentItem.image,
+            date: dateInput.value,
+          });
+        }
+      } else {
+        // Update stored item
+        const index = storedItems.findIndex((item) => item.serial === currentItem.serial);
+        if (index !== -1) {
+          storedItems[index].name = nameInput.value.trim();
+          storedItems[index].price = Number(priceInput.value);
+          storedItems[index].stock = Number(stockInput.value);
+          storedItems[index].category = categoryInput.value;
+          storedItems[index].date = dateInput.value;
+        }
+      }
+      setStoredItems(storedItems);
+      alert("Item saved successfully.");
+      loadItem();
+    }
+    function deleteItem() {
+      if (!confirm("Are you sure you want to delete this item?")) return;
+      const serial = currentItem.serial;
+      let storedItems = getStoredItems();
+      storedItems = storedItems.filter((item) => item.serial !== serial);
+      setStoredItems(storedItems);
+      if (isDefault) {
+        markDefaultItemDeleted(serial);
+      }
+      alert("Item deleted.");
+      window.location.href = "items.html";
+    }
+    saveBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      saveItem();
+    });
+    deleteBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      deleteItem();
+    });
+    window.addEventListener("load", loadItem);
+  </script>
+</body>
+</html>

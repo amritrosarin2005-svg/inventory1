@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Item - Inventory App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- All styles remain the same -->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: transparent;
+      overflow: hidden;
+      height: 100%;
+    }
+
+    body {
+      background: url('bg3.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.6);
+      z-index: 0;
+    }
+
+    .card {
+      background: #111;
+      border-radius: 18px;
+      padding: 24px 28px 30px; /* Reduced padding */
+      width: 100%;
+      max-width: 330px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 16px; /* Reduced gap */
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .back-button {
+      font-size: 24px;
+      color: #3b82f6;
+      background: transparent;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .back-button:hover {
+      background: #1e40af;
+      color: #fff;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      text-align: center;
+      color: #3b82f6;
+      font-weight: bold;
+      flex-grow: 1;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .field {
+      position: relative;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    input[type="file"] {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      border: 2px solid #333;
+      border-radius: 12px;
+      background: #222;
+      color: #fff;
+      outline: none;
+    }
+
+    input[type="file"] {
+      padding: 10px;
+      font-size: 0.95rem;
+    }
+
+    input:focus,
+    select:focus,
+    input[type="file"]:focus {
+      border-color: #3b82f6;
+    }
+
+    label {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      font-size: 0.95rem;
+      color: #888;
+      background: #111;
+      padding: 0 6px;
+      transition: all 0.2s ease;
+      pointer-events: none;
+    }
+
+    input:focus + label,
+    input:not(:placeholder-shown) + label,
+    select:focus + label,
+    select:not([value=""]) + label {
+      top: -10px;
+      left: 10px;
+      font-size: 0.7rem;
+      color: #3b82f6;
+      font-weight: bold;
+    }
+
+    input[type="file"] + label {
+      position: static;
+      padding: 0 0 4px 4px;
+      font-size: 0.95rem;
+      color: #888;
+      background: transparent;
+      pointer-events: auto;
+      margin-bottom: 4px;
+      display: inline-block;
+      top: auto;
+      left: auto;
+      transform: none;
+    }
+
+    .submit-btn {
+      background: #3b82f6;
+      border: none;
+      padding: 16px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 14px;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background 0.3s ease;
+    }
+
+    .submit-btn:hover {
+      background: #2563eb;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 18px; /* Reduced for smaller screens */
+        border-radius: 16px;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="date"],
+      select,
+      input[type="file"] {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
+
+      .submit-btn {
+        font-size: 1rem;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="card" role="main">
+    <div class="header">
+      <button class="back-button" onclick="location.href='items.html'" aria-label="Go Back">&larr;</button>
+      <h2>Add New Item</h2>
+      <div style="width: 30px;"></div>
+    </div>
+
+    <form id="addItemForm" autocomplete="off" novalidate>
+      <div class="field">
+        <input type="text" id="itemName" placeholder=" " required />
+        <label for="itemName">Name</label>
+      </div>
+
+      <div class="field">
+        <input type="number" id="stock" placeholder=" " min="0" required />
+        <label for="stock">Stock</label>
+      </div>
+
+      <div class="field">
+        <input type="number" id="price" placeholder=" " min="0" step="0.01" required />
+        <label for="price">Price (₹)</label>
+      </div>
+
+      <div class="field">
+        <select id="category" required>
+          <option value="" disabled selected hidden></option>
+          <option value="Gel">Gel</option>
+          <option value="Face Wash">Face Wash</option>
+          <option value="Cleaner">Cleaner</option>
+        </select>
+        <label for="category">Category</label>
+      </div>
+
+      <div class="field">
+        <input type="file" id="imageFile" accept="image/*" required />
+        <label for="imageFile">Image</label>
+      </div>
+
+      <div class="field">
+        <input type="text" id="serialNumber" placeholder=" " required />
+        <label for="serialNumber">Serial Number</label>
+      </div>
+
+      <div class="field">
+        <input type="date" id="date" placeholder=" " required />
+        <label for="date">Date</label>
+      </div>
+
+      <button type="submit" class="submit-btn">Add Item</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("addItemForm");
+
+    function createNotification(message) {
+      const notifications = JSON.parse(localStorage.getItem("notifications") || "[]");
+      notifications.push({ message, timestamp: new Date().toISOString() });
+      localStorage.setItem("notifications", JSON.stringify(notifications));
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const fileInput = document.getElementById("imageFile");
+      if (fileInput.files.length === 0) {
+        alert("Please select an image.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        const newItem = {
+          name: document.getElementById("itemName").value.trim(),
+          stock: parseInt(document.getElementById("stock").value),
+          price: parseFloat(document.getElementById("price").value),
+          category: document.getElementById("category").value,
+          image: event.target.result,
+          serial: document.getElementById("serialNumber").value.trim(),
+          date: document.getElementById("date").value
+        };
+
+        if (
+          !newItem.name || isNaN(newItem.stock) || isNaN(newItem.price) ||
+          !newItem.category || !newItem.serial || !newItem.date
+        ) {
+          alert("Please fill all fields correctly.");
+          return;
+        }
+
+        let storedItems = JSON.parse(localStorage.getItem("inventoryItems")) || [];
+        const duplicate = storedItems.find(i => i.serial === newItem.serial);
+        if (duplicate) {
+          alert("An item with this serial number already exists.");
+          return;
+        }
+
+        storedItems.push(newItem);
+        localStorage.setItem("inventoryItems", JSON.stringify(storedItems));
+
+        const formattedDate = new Date(newItem.date).toLocaleDateString('en-GB');
+        createNotification(`📦 New item added: ${newItem.name} on ${formattedDate}`);
+
+        window.location.href = "items.html";
+      };
+
+      reader.readAsDataURL(fileInput.files[0]);
+    });
+  </script>
+</body>
+</html>

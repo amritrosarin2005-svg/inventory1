@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stock Out - Inventory App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('bg3.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 30px 40px;
+      background-color: #ffffff; /* fully opaque */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+      border-bottom: 1px solid #ddd;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.9rem;
+    }
+
+    main {
+      flex: 1;
+      padding: 30px 20px;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+      gap: 24px;
+      align-items: start;
+    }
+
+    .card {
+      background-color: #ffffffcc; /* slight transparency on cards */
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+      overflow: hidden;
+      display: flex;
+      transition: transform 0.25s ease;
+      cursor: pointer;
+      min-height: 180px;
+      justify-content: flex-start;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-left {
+      background-color: #dc3545;
+      color: white;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 90px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      user-select: none;
+    }
+
+    .card-left .icon {
+      font-size: 1.8rem;
+      margin-top: 6px;
+    }
+
+    .card-right {
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-grow: 1;
+    }
+
+    .card-right h3 {
+      margin: 0 0 10px 0;
+      font-size: 1.3rem;
+      color: #222;
+      font-weight: 700;
+    }
+
+    .card-right p {
+      margin: 6px 0;
+      font-size: 1rem;
+      color: #444;
+      line-height: 1.4;
+    }
+
+    .card-right .meta {
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+      font-weight: 600;
+      color: #555;
+      margin-top: 10px;
+    }
+
+    footer {
+      padding: 20px 40px;
+      background-color: #ffffff; /* fully opaque */
+      border-top: 1px solid #ccc;
+      text-align: center;
+    }
+
+    .back-btn {
+      padding: 12px 28px;
+      background-color: #000;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #333;
+    }
+
+    /* MOBILE OPTIMIZATION */
+    @media (max-width: 768px) {
+      header, footer {
+        padding: 16px 20px;
+      }
+
+      header h1 {
+        font-size: 1.5rem;
+        text-align: center;
+      }
+
+      main {
+        padding: 20px 15px;
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+
+      .card {
+        flex-direction: row;
+        min-height: auto;
+      }
+
+      .card-left {
+        width: 60px;
+        padding: 14px 10px;
+        font-size: 1rem;
+      }
+
+      .card-left .icon {
+        font-size: 1.4rem;
+      }
+
+      .card-right {
+        padding: 12px 12px;
+      }
+
+      .card-right h3 {
+        font-size: 1.2rem;
+      }
+
+      .card-right p,
+      .card-right .meta {
+        font-size: 0.9rem;
+      }
+
+      footer {
+        padding: 15px 20px;
+      }
+
+      .back-btn {
+        width: 100%;
+        padding: 14px 0;
+        font-size: 1.1rem;
+      }
+    }
+
+    /* EXTRA SMALL SCREEN (Phones) */
+    @media (max-width: 400px) {
+      header h1 {
+        font-size: 1.3rem;
+        padding: 0 5px;
+      }
+
+      .card-left {
+        width: 50px;
+        padding: 10px 6px;
+        font-size: 0.9rem;
+      }
+
+      .card-left .icon {
+        font-size: 1.2rem;
+      }
+
+      .card-right h3 {
+        font-size: 1rem;
+      }
+
+      .card-right p,
+      .card-right .meta {
+        font-size: 0.85rem;
+      }
+
+      main {
+        padding: 15px 10px;
+      }
+
+      .back-btn {
+        font-size: 1rem;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>📤 Stock Out Products</h1>
+  </header>
+
+  <main id="stockOutSection" aria-live="polite" aria-label="List of stock out products"></main>
+
+  <footer>
+    <button class="back-btn" onclick="window.location.href='home.html'">← Back to Home</button>
+  </footer>
+
+  <script>
+    const transactions = [
+      { type: "in", name: "Citric Acid", items: 50, supplier: "ABC Chemicals", price: 350, date: "2025-05-16", time: "16:20", category: "Acid", TransportDetails: "Green Loads" },
+      { type: "out", name: "Lactic Acid", items: 30, customer: "XYZ Labs", price: 310, date: "2025-05-16", time: "16:20", category: "Acid", TransportDetails: "Green Loads" },
+      { type: "in", name: "Sodium Citrate", items: 70, supplier: "Delta Supplies", price: 300, date: "2025-05-16", time: "16:21", category: "Acid", TransportDetails: "Green Loads" },
+      { type: "out", name: "Ethanol", items: 20, customer: "ChemTech", price: 300, date: "2025-05-16", time: "16:22", category: "Acid", TransportDetails: "Green Loads" },
+      { type: "in", name: "Sorbitol", items: 100, supplier: "Prime Elements", price: 400, date: "2025-05-16", time: "16:23", category: "Acid", TransportDetails: "Green Loads" }
+    ];
+
+    const stockOutItems = transactions.filter(t => t.type === "out");
+
+    const section = document.getElementById("stockOutSection");
+    section.innerHTML = "";
+
+    stockOutItems.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="card-left" aria-label="Stock Out Indicator">
+          OUT
+          <div class="icon" aria-hidden="true">📤</div>
+        </div>
+        <div class="card-right">
+          <h3>${item.name}</h3>
+          <p><strong>Customer:</strong> ${item.customer}</p>
+          <p><strong>Category:</strong> ${item.category}</p>
+          <p><strong>Transport Details:</strong> ${item.TransportDetails}</p>
+          <div class="meta">
+            <span>Items: ${item.items}</span>
+            <span>₹${item.price}</span>
+          </div>
+          <p><small><strong>Date:</strong> ${item.date} <strong>Time:</strong> ${item.time}</small></p>
+        </div>
+      `;
+      section.appendChild(card);
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,17 @@
+[
+  {
+    "serial": "CX1501",
+    "name": "Chemical X",
+    "price": "₹150",
+    "stock": 30,
+    "image": "item1.jpg"
+  },
+  {
+    "serial": "CX1601",
+    "name": "Chemical Y",
+    "price": "₹180",
+    "stock": 10,
+    "image": "item2.jpg"
+  }
+  
+]

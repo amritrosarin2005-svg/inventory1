@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Add Stock Out</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body, html {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100%;
+      background: url('bg3.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.6);
+      z-index: 0;
+    }
+    .card {
+      position: relative;
+      background: rgba(17,17,17,0.9);
+      border-radius: 24px;
+      padding: 32px 36px 40px;
+      width: 100%;
+      max-width: 460px;
+      border: 1.5px solid rgba(255, 255, 255, 0.6);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      z-index: 1;
+      backdrop-filter: saturate(150%) brightness(90%);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .back-button {
+      font-size: 28px;
+      color: #3b82f6;
+      background: transparent;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .back-button:hover {
+      background: #1e40af;
+      color: #fff;
+    }
+    h2 {
+      flex-grow: 1;
+      font-size: 1.5rem;
+      color: #3b82f6;
+      font-weight: 700;
+      text-align: center;
+    }
+    form {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr;
+    }
+    .field {
+      position: relative;
+    }
+    input {
+      width: 100%;
+      padding: 16px 14px 14px;
+      font-size: 1rem;
+      border: 2.5px solid #333;
+      border-radius: 14px;
+      background: #222;
+      color: #fff;
+      outline: none;
+      font-weight: 500;
+    }
+    input:focus {
+      border-color: #3b82f6;
+    }
+    label {
+      position: absolute;
+      left: 14px;
+      top: 16px;
+      font-size: 1rem;
+      color: #888;
+      background: rgba(17,17,17,0.9);
+      padding: 0 8px;
+      transition: all 0.25s ease;
+      pointer-events: none;
+      font-weight: 600;
+    }
+    input:focus + label,
+    input:not(:placeholder-shown) + label {
+      top: -8px;
+      left: 12px;
+      font-size: 0.75rem;
+      color: #3b82f6;
+      font-weight: 700;
+    }
+    .submit-btn {
+      margin-top: 10px;
+      background: #3b82f6;
+      border: none;
+      padding: 18px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 18px;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(59,130,246,0.6);
+    }
+    .submit-btn:hover {
+      background: #2563eb;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+  <main class="card">
+    <header class="header">
+      <button class="back-button" onclick="location.href='home.html'">&larr;</button>
+      <h2>Add Stock Out</h2>
+      <div style="width: 30px;"></div>
+    </header>
+    <form id="stockOutForm" autocomplete="off" novalidate>
+      <div class="field">
+        <input type="text" id="name" placeholder=" " required />
+        <label for="name">Product Name</label>
+      </div>
+      <div class="field">
+        <input type="number" id="items" placeholder=" " min="1" required />
+        <label for="items">Quantity</label>
+      </div>
+      <div class="field">
+        <input type="text" id="customer" placeholder=" " required />
+        <label for="customer">Customer</label>
+      </div>
+      <div class="field">
+        <input type="number" id="price" placeholder=" " min="0" step="0.01" required />
+        <label for="price">Price</label>
+      </div>
+      <div class="field">
+        <input type="text" id="category" placeholder=" " required />
+        <label for="category">Category</label>
+      </div>
+      <div class="field">
+        <input type="text" id="TransportDetails" placeholder=" " required />
+        <label for="TransportDetails">Transport Details</label>
+      </div>
+      <button type="submit" class="submit-btn">Add Out</button>
+    </form>
+  </main>
+
+  <script>
+  document.getElementById('stockOutForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('name').value.trim();
+    const items = parseInt(document.getElementById('items').value);
+    const customer = document.getElementById('customer').value.trim();
+    const price = parseFloat(document.getElementById('price').value);
+    const category = document.getElementById('category').value.trim();
+    const TransportDetails = document.getElementById('TransportDetails').value.trim();
+
+    if (!name || !items || items <= 0 || !customer || isNaN(price) || price < 0 || !category || !TransportDetails) {
+      alert("Please fill in all fields correctly. Quantity must be > 0 and price >= 0.");
+      return;
+    }
+
+    const now = new Date();
+    const date = now.toISOString().split('T')[0];
+    const time = now.toTimeString().split(' ')[0].slice(0, 5);
+
+    const newTransaction = {
+      id: Date.now(),
+      type: "out",
+      name,
+      items,
+      customer,
+      price,
+      date,
+      time,
+      category,
+      TransportDetails
+    };
+
+    const storedTransactions = JSON.parse(localStorage.getItem('addedTransactions')) || [];
+    storedTransactions.push(newTransaction);
+    localStorage.setItem('addedTransactions', JSON.stringify(storedTransactions));
+
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+    const productIndex = products.findIndex(p => p.name.toLowerCase() === name.toLowerCase());
+    let updatedStock = 0;
+
+    if (productIndex > -1) {
+      products[productIndex].stock = Math.max(0, products[productIndex].stock - items);
+      updatedStock = products[productIndex].stock;
+      products[productIndex].price = price;
+      products[productIndex].category = category;
+      products[productIndex].TransportDetails = TransportDetails;
+    } else {
+      products.push({
+        id: Date.now(),
+        name,
+        stock: 0,
+        price,
+        category,
+        TransportDetails
+      });
+    }
+
+    localStorage.setItem('products', JSON.stringify(products));
+
+    // ➕ Add Notification
+    const notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+
+    notifications.push({
+      id: Date.now(),
+      message: `Stock Out: ${items} × ${name} to ${customer}`,
+      timestamp: `${date} ${time}`,
+      type: "stock-out"
+    });
+
+    // ⚠️ Add Low Stock Notification
+    if (updatedStock < 10) {
+      notifications.push({
+        id: Date.now() + 1,
+        message: `⚠️ Low Stock Alert: ${name} only has ${updatedStock} left.`,
+        timestamp: `${date} ${time}`,
+        type: "low-stock"
+      });
+    }
+
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+
+    alert("Stock Out transaction added successfully!");
+    window.location.href = 'transactions.html';
+  });
+</script>
+
+</body>
+</html>

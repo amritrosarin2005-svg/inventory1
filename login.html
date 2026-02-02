@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - Inventory App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: url('backgroundimg.jpg') no-repeat center center/cover;
+      color: white;
+      font-family: Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+
+      opacity: 0;
+      animation: fadeIn 1.2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .wrapper {
+      display: flex;
+      flex-direction: row;
+      background-color: #1e1e1e;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+      width: 900px;
+      max-width: 100%;
+      height: 550px;
+      max-height: 90vh;
+    }
+
+    .image-container {
+      width: 50%;
+      background-image: url('back.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .login-container {
+      width: 50%;
+      background-color: #081625;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+
+    .admin-info {
+      text-align: center;
+      font-size: 16px;
+      color: #aaa;
+      margin-bottom: 20px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 16px;
+      margin: 12px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #2d323d;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background-color: white;
+      color: black;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      font-size: 16px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #ccc;
+    }
+
+    .toggle-link {
+      margin-top: 15px;
+      text-align: center;
+      color: #aaa;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+
+    .error-message {
+      color: #ff4c4c;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    /* Mobile Responsive Design */
+    @media (max-width: 768px) {
+      body {
+        align-items: center;
+        padding: 10px;
+      }
+      .wrapper {
+        flex-direction: column;
+        width: 100%;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .image-container,
+      .login-container {
+        width: 100%;
+      }
+      .image-container {
+        height: 180px;
+        background-position: center;
+      }
+      .login-container {
+        padding: 30px 20px;
+      }
+      h2 {
+        font-size: 22px;
+      }
+      .admin-info {
+        font-size: 14px;
+      }
+      input[type="email"],
+      input[type="password"],
+      button {
+        font-size: 16px;
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <div class="image-container"></div>
+    <div class="login-container">
+      <h2 id="form-title">Welcome Back!</h2>
+      <p class="admin-info" id="admin-info">Admin Login Details</p>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required />
+        <input type="password" id="login-password" placeholder="Password" required />
+        <button type="submit">Log In</button>
+        <p class="error-message" id="login-error"></p>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" style="display:none;">
+        <input type="email" id="register-email" placeholder="Email" required />
+        <input type="password" id="register-password" placeholder="Password" required />
+        <button type="submit">Create Account</button>
+        <p class="error-message" id="register-error"></p>
+      </form>
+
+      <p class="toggle-link" id="toggle-link">Create a new account</p>
+    </div>
+  </div>
+
+  <script>
+    const adminEmail = 'admin@gmail.com';
+    const adminPassword = '1234';
+
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    const toggleLink = document.getElementById('toggle-link');
+    const formTitle = document.getElementById('form-title');
+    const adminInfo = document.getElementById('admin-info');
+
+    const loginError = document.getElementById('login-error');
+    const registerError = document.getElementById('register-error');
+
+    // Toggle between Login and Register forms
+    toggleLink.addEventListener('click', () => {
+      if (loginForm.style.display === 'none') {
+        registerForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        formTitle.textContent = 'Welcome Back!';
+        adminInfo.textContent = 'Admin Login Details';
+        toggleLink.textContent = 'Create a new account';
+        loginError.textContent = '';
+        registerError.textContent = '';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        formTitle.textContent = 'Create Account';
+        adminInfo.textContent = '';
+        toggleLink.textContent = 'Back to login';
+        loginError.textContent = '';
+        registerError.textContent = '';
+      }
+    });
+
+    // Helper: Get users from localStorage
+    function getUsers() {
+      const users = localStorage.getItem('users');
+      return users ? JSON.parse(users) : [];
+    }
+
+    // Helper: Save users to localStorage
+    function saveUsers(users) {
+      localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    // Handle login submit
+    loginForm.addEventListener('submit', e => {
+      e.preventDefault();
+      loginError.textContent = '';
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      if (email === adminEmail && password === adminPassword) {
+        alert('Admin login successful!');
+        window.location.href = 'home.html';
+        return;
+      }
+
+      const users = getUsers();
+      const user = users.find(u => u.email === email && u.password === password);
+
+      if (user) {
+        alert('Login successful!');
+        window.location.href = 'home.html';
+      } else {
+        loginError.textContent = 'Invalid email or password.';
+      }
+    });
+
+    // Handle register submit
+    registerForm.addEventListener('submit', e => {
+      e.preventDefault();
+      registerError.textContent = '';
+
+      const email = document.getElementById('register-email').value.trim();
+      const password = document.getElementById('register-password').value;
+
+      if (email === adminEmail) {
+        registerError.textContent = 'This email is reserved for admin.';
+        return;
+      }
+
+      const users = getUsers();
+      if (users.find(u => u.email === email)) {
+        registerError.textContent = 'This email is already registered.';
+        return;
+      }
+
+      users.push({ email, password });
+      saveUsers(users);
+      alert('Account created successfully! You can now login.');
+
+      toggleLink.click();
+      loginForm.reset();
+      registerForm.reset();
+    });
+  </script>
+
+</body>
+</html>

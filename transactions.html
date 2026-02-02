@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Transactions - Inventory App</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      padding-bottom: 80px;
+    }
+
+    .container {
+      padding: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .top-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .top-bar h2 {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .search-bar input,
+    #transactionSearch {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background-color: #1e1e1e;
+      color: white;
+      font-size: 1rem;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input::placeholder {
+      color: #aac4ff;
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #60a5fa;
+      background-color: #121212;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    button.filter-btn,
+    button.chart-btn {
+      width: 100%;
+      padding: 16px 0;
+      border-radius: 12px;
+      border: none;
+      background-color: #1e1e1e;
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      position: relative;
+    }
+
+    button.filter-btn:hover,
+    button.chart-btn:hover {
+      background-color: #2563eb;
+    }
+
+    button.filter-btn.active {
+      background-color: #2563eb;
+    }
+
+    button.filter-btn::after {
+      content: "▼";
+      position: absolute;
+      right: 16px;
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    #filterDropdown {
+      display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 48%;
+      background: #1e1e1e;
+      border: 1px solid #2563eb;
+      border-radius: 8px;
+      z-index: 999;
+      overflow: hidden;
+    }
+
+    #filterDropdown button {
+      padding: 12px 16px;
+      width: 100%;
+      background: none;
+      border: none;
+      color: white;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    #filterDropdown button:hover {
+      background-color: #2563eb;
+    }
+
+    .transaction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .transaction-item {
+      background-color: #1e1e1e;
+      padding: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .transaction-item:hover {
+      background-color: #333333;
+    }
+
+    .transaction-info p {
+      font-size: 14px;
+      margin: 2px 0;
+    }
+
+    .transaction-info p strong {
+      color: #60a5fa;
+    }
+
+    .transaction-serial {
+      color: #999999;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .add-button {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      background-color: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 48px;
+      height: 48px;
+      font-size: 36px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.6);
+      z-index: 1001;
+    }
+
+    .add-button:hover {
+      background-color: #1e40af;
+    }
+
+    .add-menu {
+      position: fixed;
+      bottom: 150px;
+      right: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 1002;
+    }
+
+    .add-menu button {
+      padding: 10px 16px;
+      background-color: #1e1e1e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .add-menu button:hover {
+      background-color: #2563eb;
+    }
+
+    nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #111;
+      display: flex;
+      justify-content: space-around;
+      padding: 6px 0;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+    }
+
+    nav a {
+      color: #888;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      min-width: 60px;
+    }
+
+    nav a:hover,
+    nav .active {
+      background-color: #2563eb;
+      color: white;
+    }
+
+    #chartOverlay {
+      position: fixed;
+      top: 120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      max-width: 600px;
+      background: rgba(30, 30, 30, 0.95);
+      border-radius: 16px;
+      padding: 20px;
+      z-index: 2000;
+      display: none;
+      color: white;
+      box-shadow: 0 0 15px #2563eb;
+    }
+
+    #chartOverlay h3 {
+      text-align: center;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    #chartOverlay canvas {
+      display: block;
+      margin: 0 auto 16px;
+    }
+
+    #chartDetails {
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+      line-height: 1.4;
+      border-top: 1px solid #444;
+      padding-top: 10px;
+    }
+
+    .triangle {
+      display: inline-block;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .triangle.down {
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 8px solid #3b82f6;
+    }
+
+    .triangle.up {
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-bottom: 8px solid #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <h2>Transactions</h2>
+      <div class="button-row">
+        <button id="filterBtn" class="filter-btn">Filter</button>
+        <button id="chartBtn" class="chart-btn">Show Chart</button>
+        <div id="filterDropdown">
+          <button onclick="setFilter('all')">All</button>
+          <button onclick="setFilter('in')">Stock In</button>
+          <button onclick="setFilter('out')">Stock Out</button>
+        </div>
+      </div>
+      <input type="text" id="transactionSearch" placeholder="Search by Product or Category" onkeyup="searchTransactions()" />
+    </div>
+    <div class="transaction-list" id="transactionList"></div>
+  </div>
+
+  <button class="add-button" onclick="toggleAddMenu()">+</button>
+  <div id="addMenu" class="add-menu">
+    <button onclick="location.href='add-stock-in.html'">Stock In</button>
+    <button onclick="location.href='add-stock-out.html'">Stock Out</button>
+  </div>
+
+  <div id="chartOverlay">
+    <h3>Transaction Items Chart</h3>
+    <canvas id="pieChart" width="250" height="600"></canvas>
+    <div id="chartDetails"></div>
+  </div>
+
+  <nav>
+    <a href="home.html"><span>🏠</span><span>Home</span></a>
+    <a href="items.html"><span>📦</span><span>Items</span></a>
+    <a href="transactions.html" class="active"><span>💱</span><span>Transactions</span></a>
+    <a href="settings.html"><span>⚙️</span><span>Settings</span></a>
+  </nav>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const listEl = document.getElementById('transactionList');
+    const stored = JSON.parse(localStorage.getItem('addedTransactions')) || [];
+    let currentFilter = 'all';
+
+    function renderTransactions(data) {
+      listEl.innerHTML = '';
+      if (data.length === 0) {
+        listEl.innerHTML = '<p style="text-align:center; color: #888;">No transactions available.</p>';
+        return;
+      }
+
+      data.forEach(tx => {
+        const card = document.createElement('div');
+        card.className = 'transaction-item';
+        const triangleClass = tx.type === 'in' ? 'triangle down' : 'triangle up';
+        const typeLabel = tx.type === 'in' ? 'Stock In' : 'Stock Out';
+
+        card.innerHTML = `
+          <div><strong></strong> ${tx.name} <span class="${triangleClass}" title="${typeLabel}"></span></div>
+          <div class="transaction-info">
+            <p><strong>StockType:</strong> ${typeLabel}</p>
+            <p><strong>Price:</strong> $${tx.price}</p>
+            <p><strong>Quantity:</strong> ${tx.items}</p>
+            <p><strong>Category:</strong> ${tx.category}</p>
+             <p><strong>Category:</strong> ${tx.TransportDetails}</p>
+            <p><strong>Date:</strong> ${tx.date} ${tx.time}</p>
+          </div>
+        `;
+
+        card.onclick = () => {
+          localStorage.setItem('currentTransaction', JSON.stringify(tx));
+          window.location.href = 'transaction-detail.html';
+        };
+
+        listEl.appendChild(card);
+      });
+    }
+
+    function toggleAddMenu() {
+      const menu = document.getElementById('addMenu');
+      menu.style.display = menu.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function searchTransactions() {
+      const keyword = document.getElementById('transactionSearch').value.toLowerCase();
+      let filtered = stored.filter(tx =>
+        tx.name.toLowerCase().includes(keyword) || tx.category.toLowerCase().includes(keyword)
+      );
+      filtered = applyFilter(filtered);
+      renderTransactions(filtered);
+    }
+
+    function applyFilter(data) {
+      if (currentFilter === 'in') return data.filter(tx => tx.type === 'in');
+      if (currentFilter === 'out') return data.filter(tx => tx.type === 'out');
+      return data;
+    }
+
+    function setFilter(type) {
+      currentFilter = type;
+      const btn = document.getElementById('filterBtn');
+      btn.textContent = type === 'all' ? 'All' : (type === 'in' ? 'Stock In' : 'Stock Out');
+
+      document.getElementById('filterDropdown').style.display = 'none';
+      btn.classList.remove('active');
+
+      renderTransactions(applyFilter(stored));
+    }
+
+    document.getElementById('filterBtn').onclick = function () {
+      const dropdown = document.getElementById('filterDropdown');
+      const btn = document.getElementById('filterBtn');
+      const isOpen = dropdown.style.display === 'block';
+
+      dropdown.style.display = isOpen ? 'none' : 'block';
+      btn.classList.toggle('active', !isOpen);
+    };
+
+    document.getElementById('chartBtn').onclick = function () {
+      const overlay = document.getElementById('chartOverlay');
+      const isVisible = overlay.style.display === 'block';
+
+      overlay.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible) renderPieChart();
+    };
+
+    function renderPieChart() {
+      const inCount = stored.filter(tx => tx.type === 'in').length;
+      const outCount = stored.filter(tx => tx.type === 'out').length;
+      const ctx = document.getElementById('pieChart').getContext('2d');
+      if (window.pieInstance) window.pieInstance.destroy();
+
+      window.pieInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Stock In', 'Stock Out'],
+          datasets: [{
+            data: [inCount, outCount],
+            backgroundColor: ['#3b82f6', '#ef4444'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: 'white' }
+            }
+          }
+        }
+      });
+
+      document.getElementById('chartDetails').innerHTML = `
+        <p><strong>Stock In:</strong> ${inCount}</p>
+        <p><strong>Stock Out:</strong> ${outCount}</p>
+      `;
+    }
+
+    renderTransactions(stored);
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Transaction</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(to right, #3a3a3a, #2e2e2e);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px 30px;
+      width: 90%;
+      max-width: 360px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      font-size: 26px;
+      margin-bottom: 30px;
+      color: #ffffff;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px 0;
+      margin: 15px 0;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #fff;
+    }
+
+    .btn.in {
+      background-color: #00b894;
+    }
+
+    .btn.out {
+      background-color: #d63031;
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+      opacity: 0.9;
+    }
+
+    @media (max-width: 480px) {
+      .glass-card {
+        padding: 30px 20px;
+      }
+
+      h2 {
+        font-size: 22px;
+      }
+
+      .btn {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glass-card">
+    <h2>Add Transaction</h2>
+    <button class="btn in" onclick="location.href='add-stock-in.html'">➕ Stock In</button>
+    <button class="btn out" onclick="location.href='add-stock-out.html'">➖ Stock Out</button>
+  </div>
+
+</body>
+</html>

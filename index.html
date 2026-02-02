@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welcome | IET Inventory App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: 
+        
+        url('backgroundimg.jpg') no-repeat center center/cover;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+    .container {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+      animation: fadeIn 1.2s ease-in-out forwards;
+      opacity: 0;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.7s ease-in-out forwards;
+    }
+
+    .logo-wrapper {
+      position: relative;
+      width: clamp(200px, 36vw, 300px);
+      height: clamp(200px, 36vw, 300px);
+      margin-bottom: 36px;
+      animation: zoomIn 1.4s ease-in-out forwards;
+    }
+
+    .logo-wrapper img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .logo-wrapper:hover img {
+      transform: scale(1.05);
+    }
+
+    .ring {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 5px solid transparent;
+      border-top: 5px solid #00e0ff;
+      border-right: 5px solid #00e0ff44;
+      animation: spin 2.2s linear infinite;
+      box-shadow: 0 0 20px #00e0ff80;
+    }
+
+    .title {
+      font-size: clamp(26px, 6vw, 38px);
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      text-shadow: 0 0 14px rgba(0, 224, 255, 0.3);
+    }
+
+    .subtitle {
+      font-size: clamp(16px, 4vw, 22px);
+      color: #cccccc;
+      font-weight: 300;
+      letter-spacing: 0.8px;
+      text-shadow: 0 0 7px rgba(255, 255, 255, 0.07);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="container">
+    <div class="logo-wrapper">
+      <img src="Company-logo.jpg" alt="Company Logo" />
+      <div class="ring"></div>
+    </div>
+    <div class="title">Inventory & Stock Management</div>
+    <div class="subtitle">Efficiency Redefined. Innovation Delivered.</div>
+  </div>
+
+  <script>
+    const container = document.getElementById("container");
+
+    // Fade in on load
+    window.onload = () => {
+      container.style.opacity = "1";
+    };
+
+    // Fade out after 2.6s
+    setTimeout(() => {
+      container.classList.add("fade-out");
+    }, 2600);
+
+    // Redirect after 3.6s
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 3200);
+  </script>
+
+</body>
+</html>
